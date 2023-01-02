@@ -1,24 +1,43 @@
-# README
+# Posterr
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This application provides API endpoints to create and retrieve posts, reposts and quoted posts. 
+The API docs are available on `localhost:3000/api-docs` once the application is running.
 
-Things you may want to cover:
+### Getting started
 
-* Ruby version
+Follow the steps below to get the development environment up and running
 
-* System dependencies
+Create the database and run the migrations
 
-* Configuration
+```
+docker-compose run --rm web bundle exec rails db:create
+```
 
-* Database creation
+### Running
+```
+docker-compose up
+```
 
-* Database initialization
+## Running the tests
+```
+docker-compose run --rm -e RAILS_ENV=test web bundle exec rspec
+```
 
-* How to run the test suite
+## Generating the API documentation
+```
+docker-compose run --rm bundle exec rails rswag:specs:swaggerize
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## Debugging
 
-* Deployment instructions
+Get the web container id
 
-* ...
+```
+docker ps
+```
+
+Attach your terminal to the container
+
+```
+docker attach container_id
+```
