@@ -7,6 +7,8 @@ paths:
   "/api/v1/users/{id}":
     get:
       summary: Retrieve user profile
+      tags:
+      - User Profile
       parameters:
       - name: id
         in: path
@@ -16,6 +18,30 @@ paths:
       responses:
         '200':
           description: User profile found
+          content:
+            application/json:
+              examples:
+                example:
+                  value:
+                    id: 3
+                    username: username
+                    joined_at: March 25, 2021
+        '400':
+          description: Invalid param
+          content:
+            application/json:
+              examples:
+                example:
+                  value:
+                    error: Invalid param
+        '422':
+          description: User not found
+          content:
+            application/json:
+              examples:
+                example:
+                  value:
+                    error: User not found
 servers:
 - url: http://{defaultHost}
   variables:
