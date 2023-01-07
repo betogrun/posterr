@@ -9,42 +9,61 @@ paths:
       summary: Retrieve posts
       tags:
       - Posts
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: string
+      - name: per_page
+        in: query
+        schema:
+          type: string
       responses:
         '200':
           description: Posts found
           content:
             application/json:
               examples:
-                all_posts:
+                default:
                   value:
                     posts:
-                    - id: 112
+                    - id: 184
                       kind: quoted
-                      user_id: 89
+                      user_id: 147
                       username: one
                       quote: quote two
-                      original_post_id: 110
+                      original_post_id: 182
                       original_content: content two
-                      original_user_id: 90
+                      original_user_id: 148
                       original_username: two
-                    - id: 111
+                    - id: 183
                       kind: repost
-                      user_id: 91
+                      user_id: 149
                       username: three
-                      original_post_id: 109
+                      original_post_id: 181
                       original_content: content one
-                      original_user_id: 89
+                      original_user_id: 147
                       original_username: one
-                    - id: 110
+                    - id: 182
                       kind: original
                       content: content two
-                      user_id: 90
+                      user_id: 148
                       username: two
-                    - id: 109
-                      kind: original
-                      content: content one
-                      user_id: 89
-                      username: one
+                    meta:
+                      total: 4
+                      page: 1
+                      per_page: 3
+        '400':
+          description: Invalid params
+          content:
+            application/json:
+              examples:
+                invalid pagination:
+                  value:
+                    page:
+                    - must be greater than or equal to 1
+                    per_page:
+                    - must be greater than or equal to 1
   "/api/v1/users/{id}":
     get:
       summary: Retrieve user profile
@@ -64,7 +83,7 @@ paths:
               examples:
                 example:
                   value:
-                    id: 92
+                    id: 150
                     username: username
                     joined_at: March 25, 2021
         '400':
