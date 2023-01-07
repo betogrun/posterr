@@ -4,30 +4,17 @@ module Feed
   module Repository
     module_function
 
-    def find_posts
-      ::Post
-        .joins(
-          %(
-            LEFT JOIN "posts" AS original_posts ON posts.original_post_id = original_posts.id
-            LEFT JOIN "users" ON posts.user_id = users.id
-            LEFT JOIN "users" AS original_users ON original_posts.user_id = original_users.id
-          )
-        )
-        .select(
-          %(
-            posts.id,
-            posts.kind,
-            posts.content,
-            posts.user_id,
-            users.username,
-            original_users.id as original_user_id,
-            original_users.username as original_username,
-            posts.original_post_id,
-            original_posts.content as original_content,
-            posts.quote
-          )
-        )
-        .order('posts.created_at DESC')
+    def find_posts(params)
+      collection = ::Post.combined
+
+      total = collection.count(:all)
+      offset = (params.page - 1) * params.per_page
+
+      collection = collection
+        .limit(params.per_page)
+        .offset(offset)
+
+      { collection:, total: }
     end
   end
 end

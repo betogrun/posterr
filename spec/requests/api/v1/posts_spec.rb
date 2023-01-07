@@ -7,11 +7,11 @@ describe 'Posts API' do
     get 'Retrieve posts' do
       tags 'Posts'
       produces 'application/json'
-      # parameter name: :user_id, in: :path, type: :string
-      # parameter name: :start_date, in: :path, type: :string
-      # parameter name: :end_date, in: :path, type: :string
-      # parameter name: :page, in: :path, type: :string
-      # parameter name: :per_page, in: :path, type: :string
+      parameter name: :page, in: :query, type: :string
+      parameter name: :per_page, in: :query, type: :string
+
+      request_body_example value: { page: 1 }, name: 'page', summary: 'Page'
+      request_body_example value: { per_page: 10 }, name: 'per_page', summary: 'Per page'
 
       response '200', 'Posts found' do
         context 'all posts' do
@@ -23,16 +23,23 @@ describe 'Posts API' do
           let!(:repost) { create(:post, :repost, user: user_three, original_post: post_one) }
           let!(:quoted_post) { create(:post, :quoted, user: user_one, original_post: post_two, quote: 'quote two') }
 
+          let(:page) { 1 }
+          let(:per_page) { 3 }
+
           before do |example|
             submit_request(example.metadata)
           end
 
           it 'retrieves all posts' do
-            result_set = JSON.parse(response.body, symbolize_names: true)[:posts]
-            actual_quoted_post = result_set[0]
-            actual_repost = result_set[1]
-            actual_post_two = result_set[2]
-            actual_post_one = result_set[3]
+            result_set = JSON.parse(response.body, symbolize_names: true)
+
+            actual_quoted_post = result_set[:posts][0]
+            actual_repost = result_set[:posts][1]
+            actual_post_two = result_set[:posts][2]
+
+            actual_total = result_set[:meta][:total]
+            actual_page = result_set[:meta][:page]
+            actual_per_page = result_set[:meta][:per_page]
 
             expect(actual_quoted_post[:id]).to eq(quoted_post.id)
             expect(actual_quoted_post[:kind]).to eq('quoted')
@@ -57,11 +64,9 @@ describe 'Posts API' do
             expect(actual_post_two[:user_id]).to eq(post_two.user_id)
             expect(actual_post_two[:username]).to eq('two')
 
-            expect(actual_post_one[:id]).to eq(post_one.id)
-            expect(actual_post_one[:kind]).to eq('original')
-            expect(actual_post_one[:content]).to eq('content one')
-            expect(actual_post_one[:user_id]).to eq(post_one.user_id)
-            expect(actual_post_one[:username]).to eq('one')
+            expect(actual_total).to eq(4)
+            expect(actual_page).to eq(1)
+            expect(actual_per_page).to eq(3)
           end
 
           after do |example|
@@ -69,13 +74,47 @@ describe 'Posts API' do
             example_spec = {
               'application/json' => {
                 examples: {
-                  all_posts: {
+                  default: {
                     value: JSON.parse(response.body, symbolize_names: true)
                   }
                 }
               }
             }
             example.metadata[:response][:content] = content.deep_merge(example_spec)
+          end
+        end
+
+        response '400', 'Invalid params' do
+          context 'invalid pagination' do
+            let(:page) { 0 }
+            let(:per_page) { -3 }
+
+            before do |example|
+              submit_request(example.metadata)
+            end
+
+            it 'return error messages' do
+              result_set = JSON.parse(response.body, symbolize_names: true)
+              page_error = result_set[:page].first
+              per_page_error = result_set[:per_page].first
+
+              expect(page_error).to eq('must be greater than or equal to 1')
+              expect(per_page_error).to eq('must be greater than or equal to 1')
+            end
+
+            after do |example|
+              content = example.metadata[:response][:content] || {}
+              example_spec = {
+                'application/json' => {
+                  examples: {
+                    'invalid pagination': {
+                      value: JSON.parse(response.body, symbolize_names: true)
+                    }
+                  }
+                }
+              }
+              example.metadata[:response][:content] = content.deep_merge(example_spec)
+            end
           end
         end
       end
