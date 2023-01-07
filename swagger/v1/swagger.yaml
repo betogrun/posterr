@@ -4,6 +4,47 @@ info:
   title: API V1
   version: v1
 paths:
+  "/api/v1/posts":
+    get:
+      summary: Retrieve posts
+      tags:
+      - Posts
+      responses:
+        '200':
+          description: Posts found
+          content:
+            application/json:
+              examples:
+                all_posts:
+                  value:
+                    posts:
+                    - id: 112
+                      kind: quoted
+                      user_id: 89
+                      username: one
+                      quote: quote two
+                      original_post_id: 110
+                      original_content: content two
+                      original_user_id: 90
+                      original_username: two
+                    - id: 111
+                      kind: repost
+                      user_id: 91
+                      username: three
+                      original_post_id: 109
+                      original_content: content one
+                      original_user_id: 89
+                      original_username: one
+                    - id: 110
+                      kind: original
+                      content: content two
+                      user_id: 90
+                      username: two
+                    - id: 109
+                      kind: original
+                      content: content one
+                      user_id: 89
+                      username: one
   "/api/v1/users/{id}":
     get:
       summary: Retrieve user profile
@@ -23,7 +64,7 @@ paths:
               examples:
                 example:
                   value:
-                    id: 3
+                    id: 92
                     username: username
                     joined_at: March 25, 2021
         '400':
