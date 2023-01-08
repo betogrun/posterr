@@ -27,27 +27,27 @@ paths:
                 all posts:
                   value:
                     posts:
-                    - id: 554
+                    - id: 566
                       kind: quoted
-                      user_id: 364
+                      user_id: 381
                       username: one
                       quote: quote two
-                      original_post_id: 552
+                      original_post_id: 564
                       original_content: content two
-                      original_user_id: 365
+                      original_user_id: 382
                       original_username: two
-                    - id: 553
+                    - id: 565
                       kind: repost
-                      user_id: 366
+                      user_id: 383
                       username: three
-                      original_post_id: 551
+                      original_post_id: 563
                       original_content: content one
-                      original_user_id: 364
+                      original_user_id: 381
                       original_username: one
-                    - id: 552
+                    - id: 564
                       kind: original
                       content: content two
-                      user_id: 365
+                      user_id: 382
                       username: two
                     meta:
                       total: 4
@@ -78,20 +78,20 @@ paths:
                 original post:
                   value:
                     post:
-                      id: 555
+                      id: 567
                       kind: original
                       content: original content
                 repost:
                   value:
                     post:
-                      id: 556
+                      id: 568
                       kind: repost
                       user_id: 98
                       original_post_id: 90
                 quoted post:
                   value:
                     post:
-                      id: 557
+                      id: 569
                       kind: quoted
                       user_id: 97
                       quote: some quote
@@ -164,9 +164,10 @@ paths:
               examples:
                 user profile:
                   value:
-                    id: 367
+                    id: 384
                     username: username
                     joined_at: March 25, 2021
+                    posts_count: 0
         '400':
           description: Invalid param
           content:

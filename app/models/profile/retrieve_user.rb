@@ -8,12 +8,17 @@ module Profile
     def call!
       return Failure(:invalid_params, result: { errors: params.errors }) unless params.valid?
 
-      record = repository.find_user(params.id)
-      return fail_with_user_not_found unless record
+      user_record = repository.find_user(params.id)
+      return fail_with_user_not_found unless user_record
 
-      joined_date = ::Profile::JoinedDate.new(record.created_at)
+      joined_date = ::Profile::JoinedDate.new(user_record.created_at)
 
-      user = ::Profile::User.new(record.id, record.username, joined_date.value)
+      user = ::Profile::User.new(
+        user_record.id,
+        user_record.username,
+        joined_date.value,
+        user_record.posts_count
+      )
       Success(result: {user:})
     end
 

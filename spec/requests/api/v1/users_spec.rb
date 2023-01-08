@@ -27,6 +27,7 @@ describe 'Users API', swagger_doc: 'v1/swagger.yaml' do
             expect(result[:id]).to eq(id)
             expect(result[:username]).to eq('username')
             expect(result[:joined_at]).to eq('March 25, 2021')
+            expect(result[:posts_count]).to eq(0)
           end
         end
       end
