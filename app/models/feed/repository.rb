@@ -22,7 +22,22 @@ module Feed
     end
 
     def create_post(params)
-      ::Post.create(user_id: params.user_id, content: params.content, kind: params.kind)
+      ::Post.create(
+        user_id: params.user_id,
+        content: params.content,
+        kind: params.kind,
+        original_post_id: params.original_post_id,
+        quote: params.quote
+      )
+    end
+
+    def post_available?(id, kind)
+      ::Post.exists?(id:, kind:)
+    end
+
+    def post_quota_exceeded?(user_id, post_quota)
+      date_rage = Date.current.beginning_of_day..Date.current.end_of_day
+      ::Post.where(user_id:, created_at: date_rage).count == post_quota
     end
   end
 end

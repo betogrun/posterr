@@ -68,20 +68,6 @@ describe 'Posts API' do
             expect(actual_page).to eq(1)
             expect(actual_per_page).to eq(3)
           end
-
-          after do |example|
-            content = example.metadata[:response][:content] || {}
-            example_spec = {
-              'application/json' => {
-                examples: {
-                  default: {
-                    value: JSON.parse(response.body, symbolize_names: true)
-                  }
-                }
-              }
-            }
-            example.metadata[:response][:content] = content.deep_merge(example_spec)
-          end
         end
 
         response '400', 'Invalid params' do
@@ -100,20 +86,6 @@ describe 'Posts API' do
 
               expect(page_error).to eq('must be greater than or equal to 1')
               expect(per_page_error).to eq('must be greater than or equal to 1')
-            end
-
-            after do |example|
-              content = example.metadata[:response][:content] || {}
-              example_spec = {
-                'application/json' => {
-                  examples: {
-                    'invalid pagination': {
-                      value: JSON.parse(response.body, symbolize_names: true)
-                    }
-                  }
-                }
-              }
-              example.metadata[:response][:content] = content.deep_merge(example_spec)
             end
           end
         end
@@ -154,22 +126,168 @@ describe 'Posts API' do
             expect(result[:content]).to eq('original content')
             expect(result[:kind]).to eq('original')
           end
+        end
 
-          after do |example|
-            content = example.metadata[:response][:content] || {}
-            example_spec = {
-              'application/json' => {
-                examples: {
-                  'original post': {
-                    value: JSON.parse(response.body, symbolize_names: true)
-                  }
-                }
-              }
+        context 'repost' do
+          let(:params) do
+            {
+              user_id: 98,
+              kind: 'repost',
+              original_post_id: 90
             }
-            example.metadata[:response][:content] = content.deep_merge(example_spec)
+          end
+
+          before do |example|
+            @user = create(:user, id: params[:user_id])
+            @post = create(:post, :original, id: params[:original_post_id], user: @user)
+            submit_request(example.metadata)
+          end
+
+          it 'returns the repost created' do
+            result = JSON.parse(response.body, symbolize_names: true)[:post]
+
+            expect(result[:id]).not_to be_nil
+            expect(result[:kind]).to eq('repost')
+            expect(result[:original_post_id]).to eq(@post.id)
+          end
+        end
+
+        context 'quoted post' do
+          let(:params) do
+            {
+              user_id: 97,
+              kind: 'quoted',
+              original_post_id: 93,
+              quote: 'some quote'
+            }
+          end
+
+          before do |example|
+            @user = create(:user, id: params[:user_id])
+            @post = create(:post, :original, id: params[:original_post_id], user: @user)
+            submit_request(example.metadata)
+          end
+
+          it 'returns the repost created' do
+            result = JSON.parse(response.body, symbolize_names: true)[:post]
+
+            expect(result[:id]).not_to be_nil
+            expect(result[:kind]).to eq('quoted')
+            expect(result[:original_post_id]).to eq(@post.id)
+            expect(result[:quote]).to eq('some quote')
+          end
+        end
+      end
+
+      response '400', 'Invalid params' do
+        context 'invalid kind' do
+          let(:params) { { user_id: 1, kind: 'invalid'} }
+
+          before { |example| submit_request(example.metadata) }
+
+          it 'returns an error message' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:kind]).to include('is not included in the list')
+          end
+        end
+
+        context 'missing content' do
+          let(:params) { { user_id: 1, kind: 'original'} }
+
+          before { |example| submit_request(example.metadata) }
+
+          it 'returns an error message' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:content]).to include('can\'t be blank')
+          end
+        end
+
+        context 'invalid content' do
+          let(:params) { { user_id: 1, kind: 'original', content: 'a' * 778 } }
+
+          before { |example| submit_request(example.metadata) }
+
+          it 'returns an error message' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:content]).to include('is too long (maximum is 777 characters)')
+          end
+        end
+      end
+
+      response '422', 'Unprocessable entity' do
+        context 'user not found' do
+          let(:params) do
+            {
+              user_id: 99,
+              kind: 'original',
+              content: 'original content'
+            }
+          end
+          before { |example| submit_request(example.metadata) }
+
+          it 'returns an error message' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:user]).to include('user not found')
+          end
+        end
+
+        context 'original post not found' do
+          let!(:user) { create(:user, id: params[:user_id]) }
+          let(:params) do
+            {
+              user_id: 99,
+              kind: 'repost',
+              original_post_id: 99
+            }
+          end
+          before { |example| submit_request(example.metadata) }
+
+          it 'returns an error message' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:original_post]).to include('original post not found')
+          end
+        end
+
+        context 'post quota exceeded' do
+          let!(:user) { create(:user, id: params[:user_id]) }
+          let!(:posts) { create_list(:post, 5, :original, user:) }
+
+          let(:params) do
+            {
+              user_id: 99,
+              kind: 'original',
+              content: 'some content'
+            }
+          end
+          before { |example| submit_request(example.metadata) }
+
+          it 'returns an error message' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:post]).to include('post quota exceeded')
           end
         end
       end
     end
+  end
+
+  after do |example|
+    content = example.metadata[:response][:content] || {}
+    example_name = example.metadata[:example_group][:description_args]&.first
+    example_spec = {
+      'application/json' => {
+        examples: {
+          "#{example_name}": {
+            value: JSON.parse(response.body, symbolize_names: true)
+          }
+        }
+      }
+    }
+    example.metadata[:response][:content] = content.deep_merge(example_spec)
   end
 end

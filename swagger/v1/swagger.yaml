@@ -24,30 +24,30 @@ paths:
           content:
             application/json:
               examples:
-                default:
+                all posts:
                   value:
                     posts:
-                    - id: 320
+                    - id: 542
                       kind: quoted
-                      user_id: 242
+                      user_id: 347
                       username: one
                       quote: quote two
-                      original_post_id: 318
+                      original_post_id: 540
                       original_content: content two
-                      original_user_id: 243
+                      original_user_id: 348
                       original_username: two
-                    - id: 319
+                    - id: 541
                       kind: repost
-                      user_id: 244
+                      user_id: 349
                       username: three
-                      original_post_id: 317
+                      original_post_id: 539
                       original_content: content one
-                      original_user_id: 242
+                      original_user_id: 347
                       original_username: one
-                    - id: 318
+                    - id: 540
                       kind: original
                       content: content two
-                      user_id: 243
+                      user_id: 348
                       username: two
                     meta:
                       total: 4
@@ -78,9 +78,60 @@ paths:
                 original post:
                   value:
                     post:
-                      id: 321
+                      id: 543
                       kind: original
                       content: original content
+                repost:
+                  value:
+                    post:
+                      id: 544
+                      kind: repost
+                      user_id: 98
+                      original_post_id: 90
+                quoted post:
+                  value:
+                    post:
+                      id: 545
+                      kind: quoted
+                      user_id: 97
+                      quote: some quote
+                      original_post_id: 93
+        '400':
+          description: Invalid params
+          content:
+            application/json:
+              examples:
+                invalid kind:
+                  value:
+                    kind:
+                    - is not included in the list
+                    original_post_id:
+                    - can't be blank
+                missing content:
+                  value:
+                    content:
+                    - can't be blank
+                invalid content:
+                  value:
+                    content:
+                    - is too long (maximum is 777 characters)
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              examples:
+                user not found:
+                  value:
+                    user:
+                    - user not found
+                original post not found:
+                  value:
+                    original_post:
+                    - original post not found
+                post quota exceeded:
+                  value:
+                    post:
+                    - post quota exceeded
       requestBody:
         content:
           application/json:
@@ -113,7 +164,7 @@ paths:
               examples:
                 example:
                   value:
-                    id: 245
+                    id: 350
                     username: username
                     joined_at: March 25, 2021
         '400':
