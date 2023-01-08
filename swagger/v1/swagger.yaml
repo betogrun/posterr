@@ -27,27 +27,27 @@ paths:
                 default:
                   value:
                     posts:
-                    - id: 280
+                    - id: 320
                       kind: quoted
-                      user_id: 217
+                      user_id: 242
                       username: one
                       quote: quote two
-                      original_post_id: 278
+                      original_post_id: 318
                       original_content: content two
-                      original_user_id: 218
+                      original_user_id: 243
                       original_username: two
-                    - id: 279
+                    - id: 319
                       kind: repost
-                      user_id: 219
+                      user_id: 244
                       username: three
-                      original_post_id: 277
+                      original_post_id: 317
                       original_content: content one
-                      original_user_id: 217
+                      original_user_id: 242
                       original_username: one
-                    - id: 278
+                    - id: 318
                       kind: original
                       content: content two
-                      user_id: 218
+                      user_id: 243
                       username: two
                     meta:
                       total: 4
@@ -77,9 +77,10 @@ paths:
               examples:
                 original post:
                   value:
-                    id: 281
-                    kind: original
-                    content: original content
+                    post:
+                      id: 321
+                      kind: original
+                      content: original content
       requestBody:
         content:
           application/json:
@@ -112,7 +113,7 @@ paths:
               examples:
                 example:
                   value:
-                    id: 220
+                    id: 245
                     username: username
                     joined_at: March 25, 2021
         '400':

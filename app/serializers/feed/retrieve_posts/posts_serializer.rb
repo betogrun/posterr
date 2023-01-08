@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module API
-  module V1
+module Feed
+  class RetrievePosts
     class PostsSerializer
       include ActiveModel::Serializers::JSON
 
@@ -24,9 +24,9 @@ module API
 
       def serializer_for(kind)
         case kind
-        when 'original' then ::API::V1::OriginalPostSerializer
-        when 'repost' then ::API::V1::RepostSerializer
-        when 'quoted' then ::API::V1::QuotedPostSerializer
+        when 'original' then ::Feed::RetrievePosts::OriginalPostSerializer
+        when 'repost' then ::Feed::RetrievePosts::RepostSerializer
+        when 'quoted' then ::Feed::RetrievePosts::QuotedPostSerializer
         end
       end
 

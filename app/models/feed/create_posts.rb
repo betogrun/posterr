@@ -12,7 +12,7 @@ module Feed
 
       post_record = repository.create_post(params)
 
-      Success(result: { post: {id: post_record.id, kind: post_record.kind, content: post_record.content } })
+      Success(result: { post: post_record })
     end
   end
 end

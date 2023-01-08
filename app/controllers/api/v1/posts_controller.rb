@@ -5,13 +5,13 @@ module API
     class PostsController < ::API::V1::Controller
       def index
         ::Feed::RetrievePosts.call(params: ::Feed::RetrievePosts::Input.new(permitted_params))
-          .on_success { |result| render_json(result[:posts], serializer: ::API::V1::PostsSerializer, status: :ok) }
+          .on_success { |result| render_json(result[:posts], serializer: ::Feed::RetrievePosts::PostsSerializer, status: :ok) }
           .on_failure(:invalid_params) { |result| render(json: result[:errors], status: :bad_request) }
       end
 
       def create
         ::Feed::CreatePosts.call(params: permitted_params)
-          .on_success { |result| render(json: result[:post], status: :created) }
+          .on_success { |result| render_json(result[:post], serializer: ::Feed::CreatePosts::PostSerializer, status: :created) }
           .on_failure(:invalid_params) { |result| render(json: result[:errors], status: :bad_request) }
           .on_failure(:user_not_found) { render(json: { user: 'User not found' }, status: :unprocessable_entity) }
       end
