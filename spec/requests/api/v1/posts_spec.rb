@@ -119,5 +119,63 @@ describe 'Posts API' do
         end
       end
     end
+
+    post 'Create post' do
+      tags 'Posts'
+      consumes 'application/json'
+      # parameter name: :user_id, in: :body, type: :string
+      # parameter name: :content, in: :body, type: :string
+      # parameter name: :kind, in: :body, type: :string
+      parameter(
+        name: :params,
+        in: :body, schema: {
+          properties: {
+            user_id: { type: :string },
+            content: { type: :string },
+            kind: { type: :string }
+          },
+          required: ['user_id']
+        }
+      )
+
+      response '201', 'Post created' do
+        context 'original post' do
+          let!(:user) { create(:user, id: params[:user_id]) }
+          let(:params) do
+            {
+              user_id: 99,
+              kind: 'original',
+              content: 'original content'
+            }
+          end
+          # let(:user_id) { '99' }
+          # let(:kind) { 'original' }
+          # let(:content) { 'original content' }
+          before { |example| submit_request(example.metadata) }
+
+          it 'returns the original post created' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:id]).not_to be_nil
+            expect(result[:content]).to eq('original content')
+            expect(result[:kind]).to eq('original')
+          end
+
+          after do |example|
+            content = example.metadata[:response][:content] || {}
+            example_spec = {
+              'application/json' => {
+                examples: {
+                  'original post': {
+                    value: JSON.parse(response.body, symbolize_names: true)
+                  }
+                }
+              }
+            }
+            example.metadata[:response][:content] = content.deep_merge(example_spec)
+          end
+        end
+      end
+    end
   end
 end

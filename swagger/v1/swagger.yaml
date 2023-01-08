@@ -27,27 +27,27 @@ paths:
                 default:
                   value:
                     posts:
-                    - id: 184
+                    - id: 280
                       kind: quoted
-                      user_id: 147
+                      user_id: 217
                       username: one
                       quote: quote two
-                      original_post_id: 182
+                      original_post_id: 278
                       original_content: content two
-                      original_user_id: 148
+                      original_user_id: 218
                       original_username: two
-                    - id: 183
+                    - id: 279
                       kind: repost
-                      user_id: 149
+                      user_id: 219
                       username: three
-                      original_post_id: 181
+                      original_post_id: 277
                       original_content: content one
-                      original_user_id: 147
+                      original_user_id: 217
                       original_username: one
-                    - id: 182
+                    - id: 278
                       kind: original
                       content: content two
-                      user_id: 148
+                      user_id: 218
                       username: two
                     meta:
                       total: 4
@@ -64,6 +64,35 @@ paths:
                     - must be greater than or equal to 1
                     per_page:
                     - must be greater than or equal to 1
+    post:
+      summary: Create post
+      tags:
+      - Posts
+      parameters: []
+      responses:
+        '201':
+          description: Post created
+          content:
+            application/json:
+              examples:
+                original post:
+                  value:
+                    id: 281
+                    kind: original
+                    content: original content
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                user_id:
+                  type: string
+                content:
+                  type: string
+                kind:
+                  type: string
+              required:
+              - user_id
   "/api/v1/users/{id}":
     get:
       summary: Retrieve user profile
@@ -83,7 +112,7 @@ paths:
               examples:
                 example:
                   value:
-                    id: 150
+                    id: 220
                     username: username
                     joined_at: March 25, 2021
         '400':
