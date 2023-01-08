@@ -123,9 +123,6 @@ describe 'Posts API' do
     post 'Create post' do
       tags 'Posts'
       consumes 'application/json'
-      # parameter name: :user_id, in: :body, type: :string
-      # parameter name: :content, in: :body, type: :string
-      # parameter name: :kind, in: :body, type: :string
       parameter(
         name: :params,
         in: :body, schema: {
@@ -148,13 +145,10 @@ describe 'Posts API' do
               content: 'original content'
             }
           end
-          # let(:user_id) { '99' }
-          # let(:kind) { 'original' }
-          # let(:content) { 'original content' }
           before { |example| submit_request(example.metadata) }
 
           it 'returns the original post created' do
-            result = JSON.parse(response.body, symbolize_names: true)
+            result = JSON.parse(response.body, symbolize_names: true)[:post]
 
             expect(result[:id]).not_to be_nil
             expect(result[:content]).to eq('original content')

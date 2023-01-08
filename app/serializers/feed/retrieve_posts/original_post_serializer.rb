@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module API
-  module V1
+module Feed
+  class RetrievePosts
     class OriginalPostSerializer
       include ActiveModel::Serializers::JSON
 
