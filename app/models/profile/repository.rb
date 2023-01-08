@@ -5,7 +5,12 @@ module Profile
     module_function
 
     def find_user(id)
-      ::User.find_by(id:)
+      ::User
+        .where(id:)
+        .left_joins(:posts)
+        .select('users.*', 'COUNT(posts.id) AS posts_count')
+        .group('users.id')
+        .take
     end
   end
 end

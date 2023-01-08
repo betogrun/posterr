@@ -4,10 +4,10 @@ module API
   module V1
     class UsersController < ::API::V1::Controller
       def show
-        ::Profile::RetrieveUser.call(id: params[:id])
+        ::Profile::RetrieveUser.call(params:)
           .on_success { |result| render_json(result[:user], serializer: ::Profile::UserSerializer, status: :ok) }
-          .on_failure(:invalid_param) { render(json: { error: 'Invalid param'}, status: :bad_request) }
-          .on_failure(:not_found) { render(json: { error: 'User not found'}, status: :unprocessable_entity) }
+          .on_failure(:invalid_params) { |result| render(json: result[:errors], status: :bad_request) }
+          .on_failure(:user_not_found) { |result| render(json: result[:error], status: :unprocessable_entity) }
       end
     end
   end
