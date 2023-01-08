@@ -13,7 +13,9 @@ module API
         ::Feed::CreatePosts.call(params: permitted_params)
           .on_success { |result| render_json(result[:post], serializer: ::Feed::CreatePosts::PostSerializer, status: :created) }
           .on_failure(:invalid_params) { |result| render(json: result[:errors], status: :bad_request) }
-          .on_failure(:user_not_found) { render(json: { user: 'User not found' }, status: :unprocessable_entity) }
+          .on_failure(:user_not_found) { |result| render(json: result[:error], status: :unprocessable_entity) }
+          .on_failure(:original_post_not_found) { |result| render(json: result[:error], status: :unprocessable_entity) }
+          .on_failure(:post_quota_exceeded) { |result| render(json: result[:error], status: :unprocessable_entity) }
       end
 
       private
