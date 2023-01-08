@@ -2,7 +2,7 @@
 
 module Feed
   class RetrievePosts < Micro::Case
-    attribute :params
+    attribute :params, default: proc(&::Feed::RetrievePosts::Input)
     attribute :repository, default: Repository
 
     def call!

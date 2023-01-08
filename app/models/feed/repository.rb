@@ -7,6 +7,8 @@ module Feed
     def find_posts(params)
       collection = ::Post.combined
 
+      collection = collection.where(user_id: params.user_id) if params.user_id
+
       total = collection.count(:all)
       offset = (params.page - 1) * params.per_page
 

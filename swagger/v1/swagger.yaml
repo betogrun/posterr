@@ -18,6 +18,11 @@ paths:
         in: query
         schema:
           type: string
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: Posts found
@@ -27,30 +32,51 @@ paths:
                 all posts:
                   value:
                     posts:
-                    - id: 578
+                    - id: 814
                       kind: quoted
-                      user_id: 385
+                      user_id: 453
                       username: one
                       quote: quote two
-                      original_post_id: 576
+                      original_post_id: 812
                       original_content: content two
-                      original_user_id: 386
+                      original_user_id: 454
                       original_username: two
-                    - id: 577
+                    - id: 813
                       kind: repost
-                      user_id: 387
+                      user_id: 455
                       username: three
-                      original_post_id: 575
+                      original_post_id: 811
                       original_content: content one
-                      original_user_id: 385
+                      original_user_id: 453
                       original_username: one
-                    - id: 576
+                    - id: 812
                       kind: original
                       content: content two
-                      user_id: 386
+                      user_id: 454
                       username: two
                     meta:
                       total: 4
+                      page: 1
+                      per_page: 3
+                filtered by user:
+                  value:
+                    posts:
+                    - id: 818
+                      kind: quoted
+                      user_id: 99
+                      username: one
+                      quote: quote two
+                      original_post_id: 816
+                      original_content: content two
+                      original_user_id: 456
+                      original_username: two
+                    - id: 815
+                      kind: original
+                      content: content one
+                      user_id: 99
+                      username: one
+                    meta:
+                      total: 2
                       page: 1
                       per_page: 3
         '400':
@@ -78,20 +104,20 @@ paths:
                 original post:
                   value:
                     post:
-                      id: 579
+                      id: 819
                       kind: original
                       content: original content
                 repost:
                   value:
                     post:
-                      id: 580
+                      id: 820
                       kind: repost
                       user_id: 98
                       original_post_id: 90
                 quoted post:
                   value:
                     post:
-                      id: 581
+                      id: 821
                       kind: quoted
                       user_id: 97
                       quote: some quote
@@ -191,7 +217,7 @@ paths:
               examples:
                 user profile:
                   value:
-                    id: 388
+                    id: 458
                     username: username
                     joined_at: March 25, 2021
                     posts_count: 0
