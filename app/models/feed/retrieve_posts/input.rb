@@ -12,9 +12,9 @@ module Feed
         @per_page = params['per_page']
       end
 
-      def page = @page.to_i
+      def page = @page&.to_i
 
-      def per_page = @per_page.to_i
+      def per_page = @per_page&.to_i
     end
   end
 end
