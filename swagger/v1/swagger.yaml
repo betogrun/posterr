@@ -27,27 +27,27 @@ paths:
                 all posts:
                   value:
                     posts:
-                    - id: 542
+                    - id: 554
                       kind: quoted
-                      user_id: 347
+                      user_id: 364
                       username: one
                       quote: quote two
-                      original_post_id: 540
+                      original_post_id: 552
                       original_content: content two
-                      original_user_id: 348
+                      original_user_id: 365
                       original_username: two
-                    - id: 541
+                    - id: 553
                       kind: repost
-                      user_id: 349
+                      user_id: 366
                       username: three
-                      original_post_id: 539
+                      original_post_id: 551
                       original_content: content one
-                      original_user_id: 347
+                      original_user_id: 364
                       original_username: one
-                    - id: 540
+                    - id: 552
                       kind: original
                       content: content two
-                      user_id: 348
+                      user_id: 365
                       username: two
                     meta:
                       total: 4
@@ -78,20 +78,20 @@ paths:
                 original post:
                   value:
                     post:
-                      id: 543
+                      id: 555
                       kind: original
                       content: original content
                 repost:
                   value:
                     post:
-                      id: 544
+                      id: 556
                       kind: repost
                       user_id: 98
                       original_post_id: 90
                 quoted post:
                   value:
                     post:
-                      id: 545
+                      id: 557
                       kind: quoted
                       user_id: 97
                       quote: some quote
@@ -162,9 +162,9 @@ paths:
           content:
             application/json:
               examples:
-                example:
+                user profile:
                   value:
-                    id: 350
+                    id: 367
                     username: username
                     joined_at: March 25, 2021
         '400':
@@ -172,17 +172,19 @@ paths:
           content:
             application/json:
               examples:
-                example:
+                invalid user id:
                   value:
-                    error: Invalid param
+                    id:
+                    - must be greater than or equal to 1
         '422':
           description: User not found
           content:
             application/json:
               examples:
-                example:
+                user not found:
                   value:
-                    error: User not found
+                    user:
+                    - user not found
 servers:
 - url: http://{defaultHost}
   variables:
