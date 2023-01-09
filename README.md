@@ -10,7 +10,7 @@ Follow the steps below to get the development environment up and running
 Create the database and run the migrations
 
 ```
-docker-compose run --rm web bundle exec rails db:create
+docker-compose run --rm web bundle exec rails db:create db:migrate db:seed
 ```
 
 ### Running
