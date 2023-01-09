@@ -352,6 +352,50 @@ describe 'Posts API' do
           end
         end
 
+        context 'can\'t repost a repost' do
+          let(:params) do
+            {
+              user_id: 92,
+              kind: 'repost',
+              original_post_id: 95
+            }
+          end
+
+          before do |example|
+            user = create(:user, id: params[:user_id])
+            create(:post, :repost, id: params[:original_post_id], user:)
+            submit_request(example.metadata)
+          end
+
+          it 'returns an error message' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:original_post]).to include('can\'t be reference the same type')
+          end
+        end
+
+        context 'can\'t quote a quoted post' do
+          let(:params) do
+            {
+              user_id: 96,
+              kind: 'quoted',
+              original_post_id: 94,
+              quote: 'quote'
+            }
+          end
+          before do |example|
+            user = create(:user, id: params[:user_id])
+            create(:post, :quoted, id: params[:original_post_id], user:)
+            submit_request(example.metadata)
+          end
+
+          it 'returns an error message' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:original_post]).to include('can\'t be reference the same type')
+          end
+        end
+
         context 'post quota exceeded' do
           let!(:user) { create(:user, id: params[:user_id]) }
           let!(:posts) { create_list(:post, 5, :original, user:) }

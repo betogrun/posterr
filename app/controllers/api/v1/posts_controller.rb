@@ -15,6 +15,7 @@ module API
           .on_failure(:invalid_params) { |result| render(json: result[:errors], status: :bad_request) }
           .on_failure(:user_not_found) { |result| render(json: result[:error], status: :unprocessable_entity) }
           .on_failure(:original_post_not_found) { |result| render(json: result[:error], status: :unprocessable_entity) }
+          .on_failure(:post_reference_not_allowed) { |result| render(json: result[:error], status: :unprocessable_entity) }
           .on_failure(:post_quota_exceeded) { |result| render(json: result[:error], status: :unprocessable_entity) }
       end
 
