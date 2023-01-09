@@ -61,4 +61,4 @@ The web server may fail first when the number of requests increases beyond its c
 
 In a real life situation, I would set up a continuous integration (CI) process and add tools for error and performance monitoring to ensure the quality and reliability of the application code.
 Additionally, I would invest in a cloud infrastructure that would allow for global availability of the application. To achieve this, I would have multiple instances running behind a load balancer and replicas of the database, including specific databases for read and write.
-To optimize data access, I would also add an in-memory database to serve as a cache, avoiding many accesses to the main database.
+To optimize data access, I would also add an in-memory database to serve as a cache, avoiding many database accesses.
