@@ -44,27 +44,27 @@ paths:
                 all posts:
                   value:
                     posts:
-                    - id: 1182
+                    - id: 119
                       kind: quoted
-                      user_id: 567
+                      user_id: 37
                       username: one
                       quote: quote two
-                      original_post_id: 1180
+                      original_post_id: 117
                       original_content: content two
-                      original_user_id: 568
+                      original_user_id: 38
                       original_username: two
-                    - id: 1181
+                    - id: 118
                       kind: repost
-                      user_id: 569
+                      user_id: 39
                       username: three
-                      original_post_id: 1179
+                      original_post_id: 116
                       original_content: content one
-                      original_user_id: 567
+                      original_user_id: 37
                       original_username: one
-                    - id: 1180
+                    - id: 117
                       kind: original
                       content: content two
-                      user_id: 568
+                      user_id: 38
                       username: two
                     meta:
                       total: 4
@@ -73,16 +73,16 @@ paths:
                 filtered by user:
                   value:
                     posts:
-                    - id: 1186
+                    - id: 123
                       kind: quoted
                       user_id: 99
                       username: one
                       quote: quote two
-                      original_post_id: 1184
+                      original_post_id: 121
                       original_content: content two
-                      original_user_id: 570
+                      original_user_id: 40
                       original_username: two
-                    - id: 1183
+                    - id: 120
                       kind: original
                       content: content one
                       user_id: 99
@@ -94,18 +94,18 @@ paths:
                 filterd by date:
                   value:
                     posts:
-                    - id: 1189
+                    - id: 126
                       kind: original
-                      content: Temporibus aut perspiciatis. Qui corporis molestias.
-                        Culpa quo officiis.
-                      user_id: 572
-                      username: andres.rohan1
-                    - id: 1188
+                      content: Atque sit occaecati. Saepe veniam libero. Repellat
+                        blanditiis debitis.
+                      user_id: 42
+                      username: nora_lowe1
+                    - id: 125
                       kind: original
-                      content: Fuga nobis asperiores. Provident exercitationem iste.
-                        Vitae et eius.
-                      user_id: 572
-                      username: andres.rohan1
+                      content: Odit voluptates ut. Est dolorem quisquam. Praesentium
+                        tenetur autem.
+                      user_id: 42
+                      username: nora_lowe1
                     meta:
                       total: 2
                       page: 1
@@ -143,20 +143,20 @@ paths:
                 original post:
                   value:
                     post:
-                      id: 1191
+                      id: 128
                       kind: original
                       content: original content
                 repost:
                   value:
                     post:
-                      id: 1192
+                      id: 129
                       kind: repost
                       user_id: 98
                       original_post_id: 90
                 quoted post:
                   value:
                     post:
-                      id: 1193
+                      id: 130
                       kind: quoted
                       user_id: 97
                       quote: some quote
@@ -193,6 +193,14 @@ paths:
                   value:
                     original_post:
                     - original post not found
+                can't repost a repost:
+                  value:
+                    original_post:
+                    - can't be reference the same type
+                can't quote a quoted post:
+                  value:
+                    original_post:
+                    - can't be reference the same type
                 post quota exceeded:
                   value:
                     post:
@@ -256,7 +264,7 @@ paths:
               examples:
                 user profile:
                   value:
-                    id: 573
+                    id: 43
                     username: username
                     joined_at: March 25, 2021
                     posts_count: 0

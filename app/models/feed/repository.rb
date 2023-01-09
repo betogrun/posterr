@@ -37,8 +37,12 @@ module Feed
       )
     end
 
-    def post_available?(id, kind)
-      ::Post.exists?(id:, kind:)
+    def post_available?(id)
+      ::Post.exists?(id:)
+    end
+
+    def original_post_kind(original_post_id)
+      ::Post.find_by(id: original_post_id).kind
     end
 
     def post_quota_exceeded?(user_id, post_quota)
