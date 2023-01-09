@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+SimpleCov.start 'rails'
+
 require 'factory_bot'
 require 'active_support/testing/time_helpers'
 
