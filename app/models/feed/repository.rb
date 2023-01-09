@@ -7,6 +7,12 @@ module Feed
     def find_posts(params)
       collection = ::Post.combined
 
+      collection = collection.where(user_id: params.user_id) if params.user_id
+
+      if params.start_date && params.end_date
+        collection = collection.where(created_at: params.start_date..params.end_date)
+      end
+
       total = collection.count(:all)
       offset = (params.page - 1) * params.per_page
 

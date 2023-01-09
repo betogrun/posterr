@@ -7,11 +7,17 @@ describe 'Posts API' do
     get 'Retrieve posts' do
       tags 'Posts'
       produces 'application/json'
-      parameter name: :page, in: :query, type: :string
-      parameter name: :per_page, in: :query, type: :string
+      parameter name: :page, in: :query, type: :string, required: false
+      parameter name: :per_page, in: :query, type: :string, required: false
+      parameter name: :user_id, in: :query, type: :string, required: false
+      parameter name: :start_date, in: :query, type: :string, required: false
+      parameter name: :end_date, in: :query, type: :string, required: false
 
       request_body_example value: { page: 1 }, name: 'page', summary: 'Page'
       request_body_example value: { per_page: 10 }, name: 'per_page', summary: 'Per page'
+      request_body_example value: { user_id: 1 }, name: 'user_id', summary: 'User id'
+      request_body_example value: { start_date: 'March 25, 2021' }, name: 'start_date', summary: 'Start date'
+      request_body_example value: { start_date: 'August 15, 2021' }, name: 'end_date', summary: 'End date'
 
       response '200', 'Posts found' do
         context 'all posts' do
@@ -26,9 +32,7 @@ describe 'Posts API' do
           let(:page) { 1 }
           let(:per_page) { 3 }
 
-          before do |example|
-            submit_request(example.metadata)
-          end
+          before { |example| submit_request(example.metadata) }
 
           it 'retrieves all posts' do
             result_set = JSON.parse(response.body, symbolize_names: true)
@@ -70,23 +74,118 @@ describe 'Posts API' do
           end
         end
 
-        response '400', 'Invalid params' do
-          context 'invalid pagination' do
-            let(:page) { 0 }
-            let(:per_page) { -3 }
+        context 'filtered by user' do
+          let!(:user_one) { create(:user, id: user_id, username: 'one') }
+          let!(:user_two) { create(:user, username: 'two') }
+          let!(:user_three) { create(:user, username: 'three') }
+          let!(:post_one) { create(:post, :original, user: user_one, content: 'content one') }
+          let!(:post_two) { create(:post, :original, user: user_two, content: 'content two') }
+          let!(:repost) { create(:post, :repost, user: user_three, original_post: post_one) }
+          let!(:quoted_post) { create(:post, :quoted, user: user_one, original_post: post_two, quote: 'quote two') }
 
-            before do |example|
-              submit_request(example.metadata)
-            end
+          let(:page) { 1 }
+          let(:per_page) { 3 }
+          let(:user_id) { 99 }
 
-            it 'return error messages' do
-              result_set = JSON.parse(response.body, symbolize_names: true)
-              page_error = result_set[:page].first
-              per_page_error = result_set[:per_page].first
+          before { |example| submit_request(example.metadata) }
 
-              expect(page_error).to eq('must be greater than or equal to 1')
-              expect(per_page_error).to eq('must be greater than or equal to 1')
-            end
+          it 'retrieves the posts by user' do
+            result_set = JSON.parse(response.body, symbolize_names: true)
+
+            actual_quoted_post = result_set[:posts][0]
+            actual_post_one = result_set[:posts][1]
+
+            actual_total = result_set[:meta][:total]
+            actual_page = result_set[:meta][:page]
+            actual_per_page = result_set[:meta][:per_page]
+
+            expect(actual_quoted_post[:id]).to eq(quoted_post.id)
+            expect(actual_quoted_post[:kind]).to eq('quoted')
+            expect(actual_quoted_post[:quote]).to eq('quote two')
+            expect(actual_quoted_post[:user_id]).to eq(quoted_post.user_id)
+            expect(actual_quoted_post[:username]).to eq('one')
+            expect(actual_quoted_post[:original_content]).to eq('content two')
+            expect(actual_quoted_post[:original_user_id]).to eq(user_two.id)
+            expect(actual_quoted_post[:original_username]).to eq('two')
+
+            expect(actual_post_one[:id]).to eq(post_one.id)
+            expect(actual_post_one[:kind]).to eq('original')
+            expect(actual_post_one[:content]).to eq('content one')
+            expect(actual_post_one[:user_id]).to eq(post_one.user_id)
+            expect(actual_post_one[:username]).to eq('one')
+
+            expect(actual_total).to eq(2)
+            expect(actual_page).to eq(1)
+            expect(actual_per_page).to eq(3)
+          end
+        end
+
+        context 'filterd by date' do
+          before do |example|
+            @user = create(:user)
+            travel_to('2021-01-10') { @post_one = create(:post, :original, user: @user) }
+            travel_to('2021-04-13') { @post_two = create(:post, :original, user: @user) }
+            travel_to('2021-07-18') { @post_three = create(:post, :original, user: @user) }
+            travel_to('2021-10-18') { @post_four = create(:post, :original, user: @user) }
+            submit_request(example.metadata)
+          end
+
+          let(:page) { 1 }
+          let(:per_page) { 3 }
+          let(:start_date) { 'March 25, 2021' }
+          let(:end_date) { 'August 15, 2021' }
+
+          it 'retrieves the posts by date range' do
+            result_set = JSON.parse(response.body, symbolize_names: true)
+
+            actual_post_three = result_set[:posts][0]
+            actual_post_two = result_set[:posts][1]
+
+            expect(actual_post_three[:id]).to eq(@post_three.id)
+            expect(actual_post_two[:id]).to eq(@post_two.id)
+          end
+        end
+      end
+
+      response '400', 'Invalid params' do
+        context 'invalid pagination' do
+          let(:page) { 0 }
+          let(:per_page) { -3 }
+
+          before do |example|
+            submit_request(example.metadata)
+          end
+
+          it 'return error messages' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:page]).to include('must be greater than or equal to 1')
+            expect(result[:per_page]).to include('must be greater than or equal to 1')
+          end
+        end
+
+        context 'invalid user id' do
+          let(:user_id) { 'invalid' }
+
+          before { |example| submit_request(example.metadata) }
+
+          it 'return error messages' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:user_id]).to include('must be greater than or equal to 1')
+          end
+        end
+
+        context 'invalid date range' do
+          let(:start_date) { 'August 15, 2021' }
+          let(:end_date) { 'March 25, 2021' }
+
+          before { |example| submit_request(example.metadata) }
+
+          it 'return error messages' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:end_date]).to include('end date must be greater than start date')
           end
         end
       end

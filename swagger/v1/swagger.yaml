@@ -12,10 +12,27 @@ paths:
       parameters:
       - name: page
         in: query
+        required: false
         schema:
           type: string
       - name: per_page
         in: query
+        required: false
+        schema:
+          type: string
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: end_date
+        in: query
+        required: false
         schema:
           type: string
       responses:
@@ -27,30 +44,70 @@ paths:
                 all posts:
                   value:
                     posts:
-                    - id: 578
+                    - id: 1182
                       kind: quoted
-                      user_id: 385
+                      user_id: 567
                       username: one
                       quote: quote two
-                      original_post_id: 576
+                      original_post_id: 1180
                       original_content: content two
-                      original_user_id: 386
+                      original_user_id: 568
                       original_username: two
-                    - id: 577
+                    - id: 1181
                       kind: repost
-                      user_id: 387
+                      user_id: 569
                       username: three
-                      original_post_id: 575
+                      original_post_id: 1179
                       original_content: content one
-                      original_user_id: 385
+                      original_user_id: 567
                       original_username: one
-                    - id: 576
+                    - id: 1180
                       kind: original
                       content: content two
-                      user_id: 386
+                      user_id: 568
                       username: two
                     meta:
                       total: 4
+                      page: 1
+                      per_page: 3
+                filtered by user:
+                  value:
+                    posts:
+                    - id: 1186
+                      kind: quoted
+                      user_id: 99
+                      username: one
+                      quote: quote two
+                      original_post_id: 1184
+                      original_content: content two
+                      original_user_id: 570
+                      original_username: two
+                    - id: 1183
+                      kind: original
+                      content: content one
+                      user_id: 99
+                      username: one
+                    meta:
+                      total: 2
+                      page: 1
+                      per_page: 3
+                filterd by date:
+                  value:
+                    posts:
+                    - id: 1189
+                      kind: original
+                      content: Temporibus aut perspiciatis. Qui corporis molestias.
+                        Culpa quo officiis.
+                      user_id: 572
+                      username: andres.rohan1
+                    - id: 1188
+                      kind: original
+                      content: Fuga nobis asperiores. Provident exercitationem iste.
+                        Vitae et eius.
+                      user_id: 572
+                      username: andres.rohan1
+                    meta:
+                      total: 2
                       page: 1
                       per_page: 3
         '400':
@@ -64,6 +121,14 @@ paths:
                     - must be greater than or equal to 1
                     per_page:
                     - must be greater than or equal to 1
+                invalid user id:
+                  value:
+                    user_id:
+                    - must be greater than or equal to 1
+                invalid date range:
+                  value:
+                    end_date:
+                    - end date must be greater than start date
     post:
       summary: Create post
       tags:
@@ -78,20 +143,20 @@ paths:
                 original post:
                   value:
                     post:
-                      id: 579
+                      id: 1191
                       kind: original
                       content: original content
                 repost:
                   value:
                     post:
-                      id: 580
+                      id: 1192
                       kind: repost
                       user_id: 98
                       original_post_id: 90
                 quoted post:
                   value:
                     post:
-                      id: 581
+                      id: 1193
                       kind: quoted
                       user_id: 97
                       quote: some quote
@@ -191,7 +256,7 @@ paths:
               examples:
                 user profile:
                   value:
-                    id: 388
+                    id: 573
                     username: username
                     joined_at: March 25, 2021
                     posts_count: 0
