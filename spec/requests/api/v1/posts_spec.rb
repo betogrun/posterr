@@ -7,12 +7,17 @@ describe 'Posts API' do
     get 'Retrieve posts' do
       tags 'Posts'
       produces 'application/json'
-      parameter name: :page, in: :query, type: :string
-      parameter name: :per_page, in: :query, type: :string
+      parameter name: :page, in: :query, type: :string, required: false
+      parameter name: :per_page, in: :query, type: :string, required: false
       parameter name: :user_id, in: :query, type: :string, required: false
+      parameter name: :start_date, in: :query, type: :string, required: false
+      parameter name: :end_date, in: :query, type: :string, required: false
 
       request_body_example value: { page: 1 }, name: 'page', summary: 'Page'
       request_body_example value: { per_page: 10 }, name: 'per_page', summary: 'Per page'
+      request_body_example value: { user_id: 1 }, name: 'user_id', summary: 'User id'
+      request_body_example value: { start_date: 'March 25, 2021' }, name: 'start_date', summary: 'Start date'
+      request_body_example value: { start_date: 'August 15, 2021' }, name: 'end_date', summary: 'End date'
 
       response '200', 'Posts found' do
         context 'all posts' do
@@ -114,6 +119,32 @@ describe 'Posts API' do
             expect(actual_per_page).to eq(3)
           end
         end
+
+        context 'filterd by date' do
+          before do |example|
+            @user = create(:user)
+            travel_to('2021-01-10') { @post_one = create(:post, :original, user: @user) }
+            travel_to('2021-04-13') { @post_two = create(:post, :original, user: @user) }
+            travel_to('2021-07-18') { @post_three = create(:post, :original, user: @user) }
+            travel_to('2021-10-18') { @post_four = create(:post, :original, user: @user) }
+            submit_request(example.metadata)
+          end
+
+          let(:page) { 1 }
+          let(:per_page) { 3 }
+          let(:start_date) { 'March 25, 2021' }
+          let(:end_date) { 'August 15, 2021' }
+
+          it 'retrieves the posts by date range' do
+            result_set = JSON.parse(response.body, symbolize_names: true)
+
+            actual_post_three = result_set[:posts][0]
+            actual_post_two = result_set[:posts][1]
+
+            expect(actual_post_three[:id]).to eq(@post_three.id)
+            expect(actual_post_two[:id]).to eq(@post_two.id)
+          end
+        end
       end
 
       response '400', 'Invalid params' do
@@ -126,12 +157,35 @@ describe 'Posts API' do
           end
 
           it 'return error messages' do
-            result_set = JSON.parse(response.body, symbolize_names: true)
-            page_error = result_set[:page].first
-            per_page_error = result_set[:per_page].first
+            result = JSON.parse(response.body, symbolize_names: true)
 
-            expect(page_error).to eq('must be greater than or equal to 1')
-            expect(per_page_error).to eq('must be greater than or equal to 1')
+            expect(result[:page]).to include('must be greater than or equal to 1')
+            expect(result[:per_page]).to include('must be greater than or equal to 1')
+          end
+        end
+
+        context 'invalid user id' do
+          let(:user_id) { 'invalid' }
+
+          before { |example| submit_request(example.metadata) }
+
+          it 'return error messages' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:user_id]).to include('must be greater than or equal to 1')
+          end
+        end
+
+        context 'invalid date range' do
+          let(:start_date) { 'August 15, 2021' }
+          let(:end_date) { 'March 25, 2021' }
+
+          before { |example| submit_request(example.metadata) }
+
+          it 'return error messages' do
+            result = JSON.parse(response.body, symbolize_names: true)
+
+            expect(result[:end_date]).to include('end date must be greater than start date')
           end
         end
       end
