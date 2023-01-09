@@ -14,6 +14,7 @@ module Feed
         @original_content = post.original_content
         @original_user_id = post.original_user_id
         @original_username = post.original_username
+        @posted_at = post.posted_at
       end
 
       def attributes
@@ -25,7 +26,8 @@ module Feed
           original_post_id:,
           original_content:,
           original_user_id:,
-          original_username:
+          original_username:,
+          posted_at:
         }
       end
 
@@ -40,7 +42,8 @@ module Feed
         :original_post,
         :original_content,
         :original_user_id,
-        :original_username
+        :original_username,
+        :posted_at
       )
     end
   end

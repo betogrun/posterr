@@ -1,7 +1,7 @@
 ---
 openapi: 3.0.1
 info:
-  title: API V1
+  title: Posterr API V1
   version: v1
 paths:
   "/api/v1/posts":
@@ -44,28 +44,31 @@ paths:
                 all posts:
                   value:
                     posts:
-                    - id: 119
+                    - id: 343
                       kind: quoted
-                      user_id: 37
+                      user_id: 112
                       username: one
                       quote: quote two
-                      original_post_id: 117
+                      original_post_id: 341
                       original_content: content two
-                      original_user_id: 38
+                      original_user_id: 113
                       original_username: two
-                    - id: 118
+                      posted_at: January 09, 2023
+                    - id: 342
                       kind: repost
-                      user_id: 39
+                      user_id: 114
                       username: three
-                      original_post_id: 116
+                      original_post_id: 340
                       original_content: content one
-                      original_user_id: 37
+                      original_user_id: 112
                       original_username: one
-                    - id: 117
+                      posted_at: January 09, 2023
+                    - id: 341
                       kind: original
                       content: content two
-                      user_id: 38
+                      user_id: 113
                       username: two
+                      posted_at: January 09, 2023
                     meta:
                       total: 4
                       page: 1
@@ -73,20 +76,22 @@ paths:
                 filtered by user:
                   value:
                     posts:
-                    - id: 123
+                    - id: 347
                       kind: quoted
                       user_id: 99
                       username: one
                       quote: quote two
-                      original_post_id: 121
+                      original_post_id: 345
                       original_content: content two
-                      original_user_id: 40
+                      original_user_id: 115
                       original_username: two
-                    - id: 120
+                      posted_at: January 09, 2023
+                    - id: 344
                       kind: original
                       content: content one
                       user_id: 99
                       username: one
+                      posted_at: January 09, 2023
                     meta:
                       total: 2
                       page: 1
@@ -94,18 +99,19 @@ paths:
                 filterd by date:
                   value:
                     posts:
-                    - id: 126
+                    - id: 350
                       kind: original
-                      content: Atque sit occaecati. Saepe veniam libero. Repellat
-                        blanditiis debitis.
-                      user_id: 42
-                      username: nora_lowe1
-                    - id: 125
+                      content: Dolor totam sit. Aut et sed. Et ea ipsa.
+                      user_id: 117
+                      username: cliff.kemmer1
+                      posted_at: July 18, 2021
+                    - id: 349
                       kind: original
-                      content: Odit voluptates ut. Est dolorem quisquam. Praesentium
-                        tenetur autem.
-                      user_id: 42
-                      username: nora_lowe1
+                      content: Debitis dolorem quam. Ipsam accusantium ratione. Molestias
+                        dolores vero.
+                      user_id: 117
+                      username: cliff.kemmer1
+                      posted_at: April 13, 2021
                     meta:
                       total: 2
                       page: 1
@@ -143,20 +149,20 @@ paths:
                 original post:
                   value:
                     post:
-                      id: 128
+                      id: 352
                       kind: original
                       content: original content
                 repost:
                   value:
                     post:
-                      id: 129
+                      id: 353
                       kind: repost
                       user_id: 98
                       original_post_id: 90
                 quoted post:
                   value:
                     post:
-                      id: 130
+                      id: 354
                       kind: quoted
                       user_id: 97
                       quote: some quote
@@ -196,11 +202,11 @@ paths:
                 can't repost a repost:
                   value:
                     original_post:
-                    - can't be reference the same type
+                    - can't be referenced by a post with the same kind
                 can't quote a quoted post:
                   value:
                     original_post:
-                    - can't be reference the same type
+                    - can't be referenced by a post with the same kind
                 post quota exceeded:
                   value:
                     post:
@@ -264,7 +270,7 @@ paths:
               examples:
                 user profile:
                   value:
-                    id: 43
+                    id: 118
                     username: username
                     joined_at: March 25, 2021
                     posts_count: 0

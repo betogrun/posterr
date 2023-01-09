@@ -29,7 +29,8 @@ class CombinedPostsQuery
             original_users.username as original_username,
             posts.original_post_id,
             original_posts.content as original_content,
-            posts.quote
+            posts.quote,
+            TO_CHAR(posts.created_at, 'FMMonth DD, YYYY') AS posted_at
           )
       )
       .order('posts.created_at DESC')
