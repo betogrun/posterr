@@ -44,7 +44,7 @@ module Feed
     end
 
     def fail_with_post_reference_not_allowed
-      error = { original_post: ['can\'t be reference the same type'] }
+      error = { original_post: ['can\'t be referenced by a post with the same kind'] }
       Failure(:post_reference_not_allowed, result: { error:})
     end
 

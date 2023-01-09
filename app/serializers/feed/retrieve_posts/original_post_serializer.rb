@@ -11,13 +11,14 @@ module Feed
         @content = post.content
         @user_id = post.user_id
         @username = post.username
+        @posted_at = post.posted_at
       end
 
-      def attributes = {id:, kind:, content:, user_id:, username:}
+      def attributes = {id:, kind:, content:, user_id:, username:, posted_at:}
 
       private
 
-      attr_reader :id, :kind, :content, :user_id, :username
+      attr_reader :id, :kind, :content, :user_id, :username, :posted_at
     end
   end
 end

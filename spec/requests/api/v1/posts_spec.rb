@@ -370,7 +370,7 @@ describe 'Posts API' do
           it 'returns an error message' do
             result = JSON.parse(response.body, symbolize_names: true)
 
-            expect(result[:original_post]).to include('can\'t be reference the same type')
+            expect(result[:original_post]).to include('can\'t be referenced by a post with the same kind')
           end
         end
 
@@ -392,7 +392,7 @@ describe 'Posts API' do
           it 'returns an error message' do
             result = JSON.parse(response.body, symbolize_names: true)
 
-            expect(result[:original_post]).to include('can\'t be reference the same type')
+            expect(result[:original_post]).to include('can\'t be referenced by a post with the same kind')
           end
         end
 
